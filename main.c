@@ -111,17 +111,17 @@ void main(void)
         down_sol = ADC_GetConversion(down) * x ;
         
         uCAN_MSG cur_data1 ;
-        cur_data1.frame.idType = dSTANDARD_CAN_MSG_ID_2_0B ;
+        cur_data1.frame.idType = dSTANDARD_CAN_MSG_ID_2_0B;
         cur_data1.frame.id = 0x470;
-        cur_data1.frame.dlc = 8 ;
-        cur_data1.frame.data0 = up_sol ;
-        cur_data1.frame.data1 = clutch_sol ;
-        cur_data1.frame.data2 = battery ;
-        cur_data1.frame.data3 = radiator ;
-        cur_data1.frame.data4 = fuel_pump ;
-        cur_data1.frame.data5 = ewp ;
-        cur_data1.frame.data6 = drs ;
-        cur_data1.frame.data7 = down_sol ;
+        cur_data1.frame.dlc = 8;
+        cur_data1.frame.data0 = up_sol;
+        cur_data1.frame.data1 = clutch_sol;
+        cur_data1.frame.data2 = battery;
+        cur_data1.frame.data3 = radiator;
+        cur_data1.frame.data4 = fuel_pump;
+        cur_data1.frame.data5 = ewp;
+        cur_data1.frame.data6 = drs;
+        cur_data1.frame.data7 = down_sol;
         
         CAN_transmit(&cur_data1) ;
     }
