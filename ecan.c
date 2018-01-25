@@ -14,7 +14,7 @@
     This source file provides APIs for ECAN.
     Generation Information :
         Product Revision  :  PIC10 / PIC12 / PIC16 / PIC18 MCUs  - 1.45
-        Device            :  PIC18F45K80
+        Device            :  PIC18F46K80
         Driver Version    :  2.00
     The generated drivers are tested against the following:
         Compiler          :  XC8 1.35
@@ -135,14 +135,14 @@ CAN ID		Mask		Filter		Buffer
 
 	/**
 	Baud rate: 1Mbps
-	System frequency: 64000000 Hz
+	System frequency: 16000000 Hz
 	Time quanta: 8
 	Sample point: 1-1-4-2
 	Sample point: 75.00%
 	*/
 
     
-    BRGCON1 = 0x03; 
+    BRGCON1 = 0x00; 
     BRGCON2 = 0x98;
     BRGCON3 = 0x01;   
     

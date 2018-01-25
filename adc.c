@@ -14,7 +14,7 @@
     This source file provides implementations for driver APIs for ADC.
     Generation Information :
         Product Revision  :  PIC10 / PIC12 / PIC16 / PIC18 MCUs  - 1.45
-        Device            :  PIC18F45K80
+        Device            :  PIC18F46K80
         Driver Version    :  2.00
     The generated drivers are tested against the following:
         Compiler          :  XC8 1.35
@@ -65,8 +65,8 @@ void ADC_Initialize(void)
     // TRIGSEL Timer1; VNCFG external; VCFG external; CHSN AVss; 
     ADCON1 = 0x98;
     
-    // ADFM Right; ACQT 2_Tad; ADCS FOSC/64; 
-    ADCON2 = 0x8E;
+    // ADFM Right; ACQT 2_Tad; ADCS FOSC/16; 
+    ADCON2 = 0x8D;
     
     // ADRESH 0; 
     ADRESH = 0x00;

@@ -52,6 +52,10 @@ void main(void)
 {
     // Initialize the device
     SYSTEM_Initialize();
+    
+//    CIOCONbits.CANCAP = 1;
+    CIOCONbits.CLKSEL = 1;
+    CIOCONbits.ENDRHI = 1;
 
     // If using interrupts in PIC18 High/Low Priority Mode you need to enable the Global High and Low Interrupts
     // If using interrupts in PIC Mid-Range Compatibility Mode you need to enable the Global and Peripheral Interrupts
@@ -81,15 +85,14 @@ void main(void)
     // Disable the Peripheral Interrupts
     //INTERRUPT_PeripheralInterruptDisable();
     
-    double Vref = 5000.0 ; // voltage reference 5V
-    double x = Vref / 4096.0 ; // convert 12-bit result to 8 bit
+    double x = 256.0 / 4096.0 ; // convert 12-bit result to 8 bit
     
 //    uint16_t timer_prev, timer_diff ;
 //    uint16_t timer_cur = TMR1_ReadTimer() ;
     
-    uint8_t up_sol, clutch_sol, radiator, 
-            fuel_pump, ewp, drs, down_sol;
-    int8_t battery ;
+    uint8_t up_sol = 0x00, clutch_sol = 0x00 , radiator = 0x00, 
+            fuel_pump = 0x00, ewp = 0x00, drs = 0x00, down_sol = 0x00;
+    int8_t battery = 0x00;
     
     adc_result_t ADCResult ;
     
@@ -98,32 +101,18 @@ void main(void)
         // compute current values from ADC results
         // all current values multiplied by 10 except battery (multiplied by 5)
         // as the battery current value might be out of range
-        ADCResult = ADC_GetConversion(up_sol) * x ;
-        up_sol = (ADCResult - 0.1*Vref)/40.0 ;
-        ADCResult = ADC_GetConversion(clutch_sol) * x ;
-        clutch_sol = (ADCResult - 0.1*Vref)/40.0 ;
-        ADCResult = ADC_GetConversion(battery) * x ;
-        battery = (ADCResult - 0.5*Vref)/3.3 ;
-        ADCResult = ADC_GetConversion(radiator) * x ;
-        radiator = (ADCResult - 0.1*Vref)/20.0 ;
-        ADCResult = ADC_GetConversion(fuel_pump) * x ;
-        fuel_pump = (ADCResult - 0.1*Vref)/40.0 ;
-        ADCResult = ADC_GetConversion(ewp) * x ;
-        ewp = (ADCResult - 0.1*Vref)/40.0 ;
-        ADCResult = ADC_GetConversion(drs) * x ;
-        drs = (ADCResult - 0.1*Vref)/40.0 ;
-        ADCResult = ADC_GetConversion(down_sol) * x ;
-        down_sol = (ADCResult - 0.1*Vref)/40.0 ;
-        
-//        timer_prev = timer_cur ;
-//        timer_cur = TMR1_ReadTimer() ;
-//        if (timer_cur < timer_prev) timer_diff = 0xFFFF - 
-//                (timer_prev - timer_cur) ;
-//        else    timer_diff = timer_cur - timer_prev ;
+        up_sol = ADC_GetConversion(up) * x ;
+        clutch_sol = ADC_GetConversion(clutch) * x ;
+        battery = ADC_GetConversion(battery) * x ;
+        radiator = ADC_GetConversion(radiator) * x ;
+        fuel_pump = ADC_GetConversion(fuel_pump) * x ;
+        ewp = ADC_GetConversion(ewp) * x ;
+        drs = ADC_GetConversion(drs) * x ;
+        down_sol = ADC_GetConversion(down) * x ;
         
         uCAN_MSG cur_data1 ;
         cur_data1.frame.idType = dSTANDARD_CAN_MSG_ID_2_0B ;
-        cur_data1.frame.id = 0x634 ;
+        cur_data1.frame.id = 0x470;
         cur_data1.frame.dlc = 8 ;
         cur_data1.frame.data0 = up_sol ;
         cur_data1.frame.data1 = clutch_sol ;

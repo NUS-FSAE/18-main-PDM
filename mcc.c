@@ -14,7 +14,7 @@
     This header file provides implementations for driver APIs for all modules selected in the GUI.
     Generation Information :
         Product Revision  :  PIC10 / PIC12 / PIC16 / PIC18 MCUs  - 1.45
-        Device            :  PIC18F45K80
+        Device            :  PIC18F46K80
         Driver Version    :  1.02
     The generated drivers are tested against the following:
         Compiler          :  XC8 1.35
@@ -52,8 +52,8 @@
 #pragma config XINST = OFF    // Extended Instruction Set->Disabled
 
 // CONFIG1H
-#pragma config FOSC = HS1    // Oscillator->HS oscillator (Medium power, 4 MHz - 16 MHz)
-#pragma config PLLCFG = ON    // PLL x4 Enable bit->Enabled
+#pragma config FOSC = HS2    // Oscillator->HS oscillator (High power, 16 MHz - 25 MHz)
+#pragma config PLLCFG = OFF    // PLL x4 Enable bit->Disabled
 #pragma config FCMEN = OFF    // Fail-Safe Clock Monitor->Disabled
 #pragma config IESO = OFF    // Internal External Oscillator Switch Over Mode->Disabled
 
@@ -77,20 +77,20 @@
 #pragma config BBSIZ = BB2K    // Boot Block Size->2K word Boot Block size
 
 // CONFIG5L
-#pragma config CP0 = OFF    // Code Protect 00800-01FFF->Disabled
-#pragma config CP1 = OFF    // Code Protect 02000-03FFF->Disabled
-#pragma config CP2 = OFF    // Code Protect 04000-05FFF->Disabled
-#pragma config CP3 = OFF    // Code Protect 06000-07FFF->Disabled
+#pragma config CP0 = OFF    // Code Protect 00800-03FFF->Disabled
+#pragma config CP1 = OFF    // Code Protect 04000-07FFF->Disabled
+#pragma config CP2 = OFF    // Code Protect 08000-0BFFF->Disabled
+#pragma config CP3 = OFF    // Code Protect 0C000-0FFFF->Disabled
 
 // CONFIG5H
 #pragma config CPB = OFF    // Code Protect Boot->Disabled
 #pragma config CPD = OFF    // Data EE Read Protect->Disabled
 
 // CONFIG6L
-#pragma config WRT0 = OFF    // Table Write Protect 00800-01FFF->Disabled
-#pragma config WRT1 = OFF    // Table Write Protect 02000-03FFF->Disabled
-#pragma config WRT2 = OFF    // Table Write Protect 04000-05FFF->Disabled
-#pragma config WRT3 = OFF    // Table Write Protect 06000-07FFF->Disabled
+#pragma config WRT0 = OFF    // Table Write Protect 00800-03FFF->Disabled
+#pragma config WRT1 = OFF    // Table Write Protect 04000-07FFF->Disabled
+#pragma config WRT2 = OFF    // Table Write Protect 08000-0BFFF->Disabled
+#pragma config WRT3 = OFF    // Table Write Protect 0C000-0FFFF->Disabled
 
 // CONFIG6H
 #pragma config WRTC = OFF    // Config. Write Protect->Disabled
@@ -98,10 +98,10 @@
 #pragma config WRTD = OFF    // Data EE Write Protect->Disabled
 
 // CONFIG7L
-#pragma config EBTR0 = OFF    // Table Read Protect 00800-01FFF->Disabled
-#pragma config EBTR1 = OFF    // Table Read Protect 02000-03FFF->Disabled
-#pragma config EBTR2 = OFF    // Table Read Protect 04000-05FFF->Disabled
-#pragma config EBTR3 = OFF    // Table Read Protect 06000-07FFF->Disabled
+#pragma config EBTR0 = OFF    // Table Read Protect 00800-03FFF->Disabled
+#pragma config EBTR1 = OFF    // Table Read Protect 04000-07FFF->Disabled
+#pragma config EBTR2 = OFF    // Table Read Protect 08000-0BFFF->Disabled
+#pragma config EBTR3 = OFF    // Table Read Protect 0C000-0FFFF->Disabled
 
 // CONFIG7H
 #pragma config EBTRB = OFF    // Table Read Protect Boot->Disabled
@@ -121,8 +121,8 @@ void SYSTEM_Initialize(void)
 
 void OSCILLATOR_Initialize(void)
 {
-    // SCS FOSC; HFIOFS not stable; IDLEN disabled; IRCF 8MHz_HF; 
-    OSCCON = 0x60;
+    // SCS FOSC; HFIOFS not stable; IDLEN disabled; IRCF 16MHz_HF; 
+    OSCCON = 0x70;
     // SOSCGO disabled; MFIOSEL disabled; SOSCDRV Low Power; 
     OSCCON2 = 0x00;
     // INTSRC INTRC; PLLEN disabled; TUN 0; 
