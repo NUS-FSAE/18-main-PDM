@@ -49,7 +49,7 @@ uint8_t up_sol_H, up_sol_L, clutch_sol_H, clutch_sol_L, radiator_H, radiator_L,
         fuel_pump_H, fuel_pump_L, ewp_H, ewp_L, drs_H, drs_L, 
         down_sol_H, down_sol_L, battery_H, battery_L;
 
-void CAN_TRANSMIT();
+void CAN_TRANSMISSION();
 /*
                          Main application
  */
@@ -96,7 +96,7 @@ void main(void)
 //    uint16_t timer_cur = TMR1_ReadTimer() ;
 
     adc_result_t ADCResult ;
-    TMR1_SetInterruptHandler(&CAN_TRANSMIT);
+    TMR1_SetInterruptHandler(&CAN_TRANSMISSION);
     
     while (1)
     {
@@ -130,7 +130,7 @@ void main(void)
     }
 }
 
-void CAN_TRANSMIT() {
+void CAN_TRANSMISSION() {
     uCAN_MSG cur_data1;
     cur_data1.frame.idType = dSTANDARD_CAN_MSG_ID_2_0B;
     cur_data1.frame.id = 0x470;
