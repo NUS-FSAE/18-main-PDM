@@ -93,11 +93,14 @@ void main(void)
     uint8_t up_sol = 0x00, clutch_sol = 0x00 , radiator = 0x00, 
             fuel_pump = 0x00, ewp = 0x00, drs = 0x00, down_sol = 0x00;
     int8_t battery = 0x00;
+    uint16_t cur_timer;
     
     adc_result_t ADCResult ;
     
     while (1)
     {
+        TMR0_Reload();
+        cur_timer = TMR0_ReadTimer();
         // compute current values from ADC results
         // all current values multiplied by 10 except battery (multiplied by 5)
         // as the battery current value might be out of range
@@ -124,6 +127,8 @@ void main(void)
         cur_data1.frame.data7 = down_sol;
         
         CAN_transmit(&cur_data1) ;
+        
+        while (TMR0_ReadTimer() < cur_timer + 1);
     }
 }
 /**

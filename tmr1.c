@@ -54,7 +54,6 @@
   Section: Global Variables Definitions
 */
 volatile uint16_t timer1ReloadVal;
-void (*TMR1_InterruptHandler)(void);
 
 /**
   Section: TMR1 APIs
@@ -73,20 +72,14 @@ void TMR1_Initialize(void)
     //TMR1H 255; 
     TMR1H = 0xFF;
 
-    //TMR1L 254; 
-    TMR1L = 0xFE;
+    //TMR1L 240; 
+    TMR1L = 0xF0;
 
     // Load the TMR value to reload variable
     timer1ReloadVal=(uint16_t)((TMR1H << 8) | TMR1L);
 
-    // Clearing IF flag before enabling the interrupt.
+    // Clearing IF flag.
     PIR1bits.TMR1IF = 0;
-
-    // Enabling TMR1 interrupt.
-    PIE1bits.TMR1IE = 1;
-
-    // Set Default Interrupt Handler
-    TMR1_SetInterruptHandler(TMR1_DefaultInterruptHandler);
 
     // Start TMR1
     TMR1_StartTimer();
@@ -157,31 +150,11 @@ uint8_t TMR1_CheckGateValueStatus(void)
     return (T1GCONbits.T1GVAL);
 }
 
-void TMR1_ISR(void)
+bool TMR1_HasOverflowOccured(void)
 {
-
-    // Clear the TMR1 interrupt flag
-    PIR1bits.TMR1IF = 0;
-
-    TMR1H = (timer1ReloadVal >> 8);
-    TMR1L = timer1ReloadVal;
-
-    if(TMR1_InterruptHandler)
-    {
-        TMR1_InterruptHandler();
-    }
+    // check if  overflow has occurred by checking the TMRIF bit
+    return(PIR1bits.TMR1IF);
 }
-
-
-void TMR1_SetInterruptHandler(void (* InterruptHandler)(void)){
-    TMR1_InterruptHandler = InterruptHandler;
-}
-
-void TMR1_DefaultInterruptHandler(void){
-    // add your TMR1 interrupt custom code
-    // or set custom function using TMR1_SetInterruptHandler()
-}
-
 /**
   End of File
 */
