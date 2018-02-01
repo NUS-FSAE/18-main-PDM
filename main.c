@@ -74,13 +74,13 @@ void main(void)
     //INTERRUPT_GlobalInterruptLowDisable();
 
     // Enable the Global Interrupts
-    //INTERRUPT_GlobalInterruptEnable();
+    INTERRUPT_GlobalInterruptEnable();
 
     // Disable the Global Interrupts
     //INTERRUPT_GlobalInterruptDisable();
 
     // Enable the Peripheral Interrupts
-    //INTERRUPT_PeripheralInterruptEnable();
+    INTERRUPT_PeripheralInterruptEnable();
 
     // Disable the Peripheral Interrupts
     //INTERRUPT_PeripheralInterruptDisable();
@@ -93,42 +93,41 @@ void main(void)
     uint8_t up_sol = 0x00, clutch_sol = 0x00 , radiator = 0x00, 
             fuel_pump = 0x00, ewp = 0x00, drs = 0x00, down_sol = 0x00;
     int8_t battery = 0x00;
-    uint16_t cur_timer;
     
     adc_result_t ADCResult ;
     
     while (1)
     {
-        TMR0_Reload();
-        cur_timer = TMR0_ReadTimer();
-        // compute current values from ADC results
-        // all current values multiplied by 10 except battery (multiplied by 5)
-        // as the battery current value might be out of range
-        up_sol = ADC_GetConversion(up) * x ;
-        clutch_sol = ADC_GetConversion(clutch) * x ;
-        battery = ADC_GetConversion(battery) * x ;
-        radiator = ADC_GetConversion(radiator) * x ;
-        fuel_pump = ADC_GetConversion(fuel_pump) * x ;
-        ewp = ADC_GetConversion(ewp) * x ;
-        drs = ADC_GetConversion(drs) * x ;
-        down_sol = ADC_GetConversion(down) * x ;
-        
-        uCAN_MSG cur_data1 ;
-        cur_data1.frame.idType = dSTANDARD_CAN_MSG_ID_2_0B;
-        cur_data1.frame.id = 0x470;
-        cur_data1.frame.dlc = 8;
-        cur_data1.frame.data0 = up_sol;
-        cur_data1.frame.data1 = clutch_sol;
-        cur_data1.frame.data2 = battery;
-        cur_data1.frame.data3 = radiator;
-        cur_data1.frame.data4 = fuel_pump;
-        cur_data1.frame.data5 = ewp;
-        cur_data1.frame.data6 = drs;
-        cur_data1.frame.data7 = down_sol;
-        
-        CAN_transmit(&cur_data1) ;
-        
-        while (TMR0_ReadTimer() < cur_timer + 1);
+        if (TMR2_GetTransmit()){
+            // compute current values from ADC results
+            // all current values multiplied by 10 except battery (multiplied by 5)
+            // as the battery current value might be out of range
+            up_sol = ADC_GetConversion(up) * x ;
+            clutch_sol = ADC_GetConversion(clutch) * x ;
+            battery = ADC_GetConversion(battery) * x ;
+            radiator = ADC_GetConversion(radiator) * x ;
+            fuel_pump = ADC_GetConversion(fuel_pump) * x ;
+            ewp = ADC_GetConversion(ewp) * x ;
+            drs = ADC_GetConversion(drs) * x ;
+            down_sol = ADC_GetConversion(down) * x ;
+
+            uCAN_MSG cur_data1 ;
+            cur_data1.frame.idType = dSTANDARD_CAN_MSG_ID_2_0B;
+            cur_data1.frame.id = 0x470;
+            cur_data1.frame.dlc = 8;
+            cur_data1.frame.data0 = up_sol;
+            cur_data1.frame.data1 = clutch_sol;
+            cur_data1.frame.data2 = battery;
+            cur_data1.frame.data3 = radiator;
+            cur_data1.frame.data4 = fuel_pump;
+            cur_data1.frame.data5 = ewp;
+            cur_data1.frame.data6 = drs;
+            cur_data1.frame.data7 = down_sol;
+
+            CAN_transmit(&cur_data1) ;
+            TMR2_ClearTransmit();
+            INTERRUPT_PeripheralInterruptEnable();
+        }
     }
 }
 /**

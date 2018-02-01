@@ -1,21 +1,23 @@
 /**
-  @Generated PIC10 / PIC12 / PIC16 / PIC18 MCUs  Header File
+  Generated Interrupt Manager Source File
 
   @Company:
     Microchip Technology Inc.
 
   @File Name:
-    mcc.h
+    interrupt_manager.c
 
   @Summary:
-    This is the mcc.h file generated using PIC10 / PIC12 / PIC16 / PIC18 MCUs 
+    This is the Interrupt Manager file generated using PIC10 / PIC12 / PIC16 / PIC18 MCUs 
 
   @Description:
-    This header file provides implementations for driver APIs for all modules selected in the GUI.
+    This header file provides implementations for global interrupt handling.
+    For individual peripheral handlers please see the peripheral driver for
+    all modules selected in the GUI.
     Generation Information :
         Product Revision  :  PIC10 / PIC12 / PIC16 / PIC18 MCUs  - 1.45
         Device            :  PIC18F46K80
-        Version           :  1.02
+        Driver Version    :  1.02
     The generated drivers are tested against the following:
         Compiler          :  XC8 1.35
         MPLAB             :  MPLAB X 3.40
@@ -43,50 +45,27 @@
     TERMS.
 */
 
-#ifndef MCC_H
-#define	MCC_H
-#include <xc.h>
-#include "pin_manager.h"
-#include <stdint.h>
-#include <stdbool.h>
 #include "interrupt_manager.h"
-#include "ecan.h"
-#include "tmr2.h"
-#include "tmr1.h"
-#include "adc.h"
+#include "mcc.h"
 
-#define _XTAL_FREQ  16000000
+void  INTERRUPT_Initialize (void)
+{
+    // Disable Interrupt Priority Vectors (16CXXX Compatibility Mode)
+    RCONbits.IPEN = 0;
+}
 
-
-/**
- * @Param
-    none
- * @Returns
-    none
- * @Description
-    Initializes the device to the default states configured in the
- *                  MCC GUI
- * @Example
-    SYSTEM_Initialize(void);
- */
-void SYSTEM_Initialize(void);
-
-/**
- * @Param
-    none
- * @Returns
-    none
- * @Description
-    Initializes the oscillator to the default states configured in the
- *                  MCC GUI
- * @Example
-    OSCILLATOR_Initialize(void);
- */
-void OSCILLATOR_Initialize(void);
-
-
-
-#endif	/* MCC_H */
+void interrupt INTERRUPT_InterruptManager (void)
+{
+    // interrupt handler
+    if(INTCONbits.PEIE == 1 && PIE1bits.TMR2IE == 1 && PIR1bits.TMR2IF == 1)
+    {
+        TMR2_ISR();
+    }
+    else
+    {
+        //Unhandled Interrupt
+    }
+}
 /**
  End of File
 */

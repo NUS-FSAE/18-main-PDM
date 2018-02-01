@@ -192,16 +192,6 @@
 #define down_SetAnalogMode()  do { ANCON1bits.ANSEL9 = 1; } while(0)
 #define down_SetDigitalMode() do { ANCON1bits.ANSEL9 = 0; } while(0)
 
-// get/set RB5 procedures
-#define RB5_SetHigh()    do { LATBbits.LATB5 = 1; } while(0)
-#define RB5_SetLow()   do { LATBbits.LATB5 = 0; } while(0)
-#define RB5_Toggle()   do { LATBbits.LATB5 = ~LATBbits.LATB5; } while(0)
-#define RB5_GetValue()         PORTBbits.RB5
-#define RB5_SetDigitalInput()   do { TRISBbits.TRISB5 = 1; } while(0)
-#define RB5_SetDigitalOutput()  do { TRISBbits.TRISB5 = 0; } while(0)
-#define RB5_SetPullup()     do { WPUBbits.WPUB5 = 1; } while(0)
-#define RB5_ResetPullup()   do { WPUBbits.WPUB5 = 0; } while(0)
-
 // get/set radiator aliases
 #define radiator_TRIS               TRISEbits.TRISE0
 #define radiator_LAT                LATEbits.LATE0
