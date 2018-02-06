@@ -85,14 +85,15 @@ void main(void)
     // Disable the Peripheral Interrupts
     //INTERRUPT_PeripheralInterruptDisable();
     
-    double x = 256.0 / 4096.0 ; // convert 12-bit result to 8 bit
+    double x = 5000.0 / 4096.0 ; // convert 12-bit result to 16 bit
     
 //    uint16_t timer_prev, timer_diff ;
 //    uint16_t timer_cur = TMR1_ReadTimer() ;
     
-    uint8_t up_sol = 0x00, clutch_sol = 0x00 , radiator = 0x00, 
-            fuel_pump = 0x00, ewp = 0x00, drs = 0x00, down_sol = 0x00;
-    int8_t battery = 0x00;
+    uint8_t up_sol_L, up_sol_H, clutch_sol_L, clutch_sol_H, 
+            radiator_L, radiator_H, fuel_pump_L, fuel_pump_H,
+            ewp_L, ewp_H, drs_L, drs_H, down_sol_L, down_sol_H, 
+            battery_L, battery_H;
     
     adc_result_t ADCResult ;
     
@@ -102,29 +103,59 @@ void main(void)
             // compute current values from ADC results
             // all current values multiplied by 10 except battery (multiplied by 5)
             // as the battery current value might be out of range
-            up_sol = ADC_GetConversion(up) * x ;
-            clutch_sol = ADC_GetConversion(clutch) * x ;
-            battery = ADC_GetConversion(battery) * x ;
-            radiator = ADC_GetConversion(radiator) * x ;
-            fuel_pump = ADC_GetConversion(fuel_pump) * x ;
-            ewp = ADC_GetConversion(ewp) * x ;
-            drs = ADC_GetConversion(drs) * x ;
-            down_sol = ADC_GetConversion(down) * x ;
-
+            ADCResult = ADC_GetConversion(up) * x ;
+            up_sol_L = ADCResult;
+            up_sol_H = ADCResult >> 8;
+            ADCResult = ADC_GetConversion(clutch) * x ;
+            clutch_sol_L = ADCResult;
+            clutch_sol_H = ADCResult >> 8;
+            ADCResult = ADC_GetConversion(battery) * x ;
+            battery_L = ADCResult;
+            battery_H = ADCResult >> 8;
+            ADCResult = ADC_GetConversion(radiator) * x ;
+            radiator_L = ADCResult;
+            radiator_H = ADCResult >> 8;
+            ADCResult = ADC_GetConversion(fuel_pump) * x ;
+            fuel_pump_L = ADCResult;
+            fuel_pump_H = ADCResult >> 8;
+            ADCResult = ADC_GetConversion(ewp) * x ;
+            ewp_L = ADCResult;
+            ewp_H = ADCResult >> 8;
+            ADCResult = ADC_GetConversion(drs) * x ;
+            drs_L = ADCResult;
+            drs_H = ADCResult >> 8;
+            ADCResult = ADC_GetConversion(down) * x ;
+            down_sol_L = ADCResult;
+            down_sol_H = ADCResult >> 8;
+            
             uCAN_MSG cur_data1 ;
             cur_data1.frame.idType = dSTANDARD_CAN_MSG_ID_2_0B;
             cur_data1.frame.id = 0x470;
             cur_data1.frame.dlc = 8;
-            cur_data1.frame.data0 = up_sol;
-            cur_data1.frame.data1 = clutch_sol;
-            cur_data1.frame.data2 = battery;
-            cur_data1.frame.data3 = radiator;
-            cur_data1.frame.data4 = fuel_pump;
-            cur_data1.frame.data5 = ewp;
-            cur_data1.frame.data6 = drs;
-            cur_data1.frame.data7 = down_sol;
+            cur_data1.frame.data0 = battery_H;
+            cur_data1.frame.data1 = battery_L;
+            cur_data1.frame.data2 = radiator_H;
+            cur_data1.frame.data3 = radiator_L;
+            cur_data1.frame.data4 = ewp_H;
+            cur_data1.frame.data5 = ewp_L;
+            cur_data1.frame.data6 = fuel_pump_H;
+            cur_data1.frame.data7 = fuel_pump_L;
+            
+            uCAN_MSG cur_data2;
+            cur_data2.frame.idType = dSTANDARD_CAN_MSG_ID_2_0B;
+            cur_data2.frame.id = 0x474;
+            cur_data2.frame.dlc = 8;
+            cur_data2.frame.data0 = up_sol_H;
+            cur_data2.frame.data1 = up_sol_L;
+            cur_data2.frame.data2 = down_sol_H;
+            cur_data2.frame.data3 = down_sol_L;
+            cur_data2.frame.data4 = clutch_sol_H;
+            cur_data2.frame.data5 = clutch_sol_L;
+            cur_data2.frame.data6 = drs_H;
+            cur_data2.frame.data7 = drs_L;
 
-            CAN_transmit(&cur_data1) ;
+            CAN_transmit(&cur_data1);
+            CAN_transmit(&cur_data2);
             TMR2_ClearTransmit();
             INTERRUPT_PeripheralInterruptEnable();
         }

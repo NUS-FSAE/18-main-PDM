@@ -87,7 +87,15 @@ typedef enum
     channel_CTMU =  0x1C,
     channel_Temp_diode =  0x1D,
     channel_Vdd_core =  0x1E,
-    channel_1_024V_bandgap =  0x1F
+    channel_1_024V_bandgap =  0x1F,
+    drs =  0x0A,
+    fuel_pump =  0x06,
+    radiator =  0x05,
+    up =  0x00,
+    down =  0x09,
+    ewp =  0x07,
+    battery =  0x04,
+    clutch =  0x01
 } adc_channel_t;
 
 /**
