@@ -85,7 +85,7 @@ void main(void)
     // Disable the Peripheral Interrupts
     //INTERRUPT_PeripheralInterruptDisable();
     
-    double x = 5000.0 / 4096.0 ; // convert 12-bit result to 16 bit
+    double x = 5000.0 / 4096.0 ; // convert 12-bit result to mV value
     
 //    uint16_t timer_prev, timer_diff ;
 //    uint16_t timer_cur = TMR1_ReadTimer() ;
